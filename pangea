@@ -1,6 +1,7 @@
+#!/bin/sh/
+
 data=${1:6}
 unamestr=`uname`
-<<<<<<< HEAD
 version="2.0"
 pwd=`pwd`
 dataFolder="$pwd/$version/data"
@@ -35,13 +36,6 @@ makeModelFolderStructure() {
 
 downloadCorpusSources(){
 	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/src/'
-=======
-arr=$(echo $data | tr ";" "\n")
-
-
-downloadCorpus(){
-	corpusURI=$1
->>>>>>> 329b4dce44c2dcd6bc7e889b5d87cc13c6fd3050
 	download=1
 	i=1
 	while [  $download -eq 1 ]; do
@@ -55,8 +49,8 @@ downloadCorpus(){
 			i=$[i+1]
 		fi
 	done
+}
 
-<<<<<<< HEAD
 downloadExtractor() {
 	extractorURI="http://scg.unibe.ch/pangea/$version/data/$1/models/$2/extractor/$2.zip"
 	curl -o "$dataFolder/$1/models/$2/extractor/$2.zip" $extractorURI	
@@ -90,13 +84,6 @@ downloadAllCorpora(){
 		downloadCorpus $corpus
 
 	done < "$dataFolder/content.txt"
-=======
-	echo "== download Models"
-	curl -O $corpusURI'MSE.tar'
-
-	echo "== download Metadata"
-	curl -O $corpusURI'metadata.tar'
->>>>>>> 329b4dce44c2dcd6bc7e889b5d87cc13c6fd3050
 }
 
 unpackCorpus(){
@@ -123,7 +110,6 @@ unpackCorpus(){
 }
 
 
-<<<<<<< HEAD
 case "$1" in
 
 get)
@@ -160,49 +146,10 @@ run)
 ;;
 esac
 
-=======
->>>>>>> 329b4dce44c2dcd6bc7e889b5d87cc13c6fd3050
 # -------- download
 
-for x in $corpora
-do
-	corpusURI='http://scg.unibe.ch/pangea/data/'$x'/'
-	downloadCorpus $corpusURI
-	unpackCorpus $x
-done
-
-
-echo "== download Moose"
-curl -O 'http://ci.moosetechnology.org/job/moose-latest-dev/lastSuccessfulBuild/artifact/moose/*zip*/moose.zip'
-unzip 'moose.zip'
-
-if [[ "$unamestr" == 'Linux' ]]; then 
-	echo "== download Cog for linux"
-	curl -OL 'http://pharo.gforge.inria.fr/ci/vm/nbcog/linux/NBCog-linux-latest.zip'
-	mv 'NBCog-linux-latest.zip' 'cog.zip'
-elif [[ "$unamestr" == 'Darwin' ]]; then
-	echo "== download Cog for osx"
-	curl -OL 'http://pharo.gforge.inria.fr/ci/vm/nbcog/mac/NBCog-mac-latest.zip'
-	mv 'NBCog-mac-latest.zip' 'cog.zip'
-fi	
-unzip 'cog.zip'
-
-echo "== download analysis template"
-curl -OL 'http://scg.unibe.ch/pangea/.analysis_template.st'
-mv '.analysis_template.st' 'analysis_template.st'
-
-echo "== download analysis example"
-curl -OL 'http://scg.unibe.ch/pangea/.analysis_example.st'
-mv '.analysis_example.st' 'analysis_example.st'
-
-echo "== download run script"
-curl -OL 'http://scg.unibe.ch/pangea/tools/runAnalysis.sh'
-chmod +x "runAnalysis.sh"
-
-rm *.zip
-
-# -------- convert to UTF-8
-echo "== convert to UTF8"
-for f in $(find . -name '*.java'); do
-	iconv -f ISO-8859-1 -t UTF-8 $f>$f".conv" ; mv $f".conv" $f
-done
+#for x in $corpora
+#do
+#	downloadCorpus $x
+#	unpackCorpus $x
+#done
