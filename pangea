@@ -1,7 +1,20 @@
+#!/bin/sh/
+
 data=${1:6}
 unamestr=`uname`
 version="2.0"
+pwd=`pwd`
+
 corpora=$(echo $data | tr "," "\n")
+
+
+makeRootFolderStructure() {
+	#TODO: check if the folders exist before creating them
+	mkdir "$pwd/$version"
+	mkdir "$pwd/$version/examples"
+	mkdir "$pwd/$version/data"
+	mkdir "$pwd/$version/tools"
+}
 
 downloadSources(){
 	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/src/'
@@ -18,9 +31,6 @@ downloadSources(){
 			i=$[i+1]
 		fi
 	done
-
-	echo "== download Metadata"
-	curl -O $corpusURI'metadata.tar'
 }
 
 downloadCorpuses(){
@@ -58,18 +68,19 @@ case "$1" in
 
 get)
     case "$2" in
-        src) if [ $# == 4 ];
- 			then
-                if [ "$3" == "-c" ];
-				then
-                    downloadSources $4
-				else
-					echo "wrong arguments"
-					exit;
-            	fi
+        src) 
+		if [ $# == 4 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+				makeRootFolderStructure
 			else
-				downloadCorpuses
-			fi
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			downloadCorpuses
+		fi
     	;;
     	bin)
     	;;
