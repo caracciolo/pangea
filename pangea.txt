@@ -1,0 +1,37 @@
+pangea get <src|bin> [-c QCr] 
+  -- bin #gets all it needs to run
+  -- src #gets sources, available exporters and default moose image, if no parameter - get all
+	
+pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage]
+
+pangea clean <all|mse|imgs> [-c QCr]	#cleans all for a corpora
+	
+pangea edit analysis.st
+
+pangea run [-c QCr|QCr.sysName] [-j 4] [-a analysis]
+
+
+
+#2 
+	- examples
+	- data
+		- QC
+			- src
+				- JHD/JHD 1.2
+			- models
+				- VerveineJ-2.3 
+					- MSE
+						- JHD 1.2.mse
+					- Extractor
+						- vj.sh
+					- images
+						- JHD 1.2.image / changes
+	- tools 
+		- image
+			- moose.image / changes
+		- vm
+			- Pharo
+		
+							
+						
+				
