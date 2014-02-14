@@ -1,0 +1,96 @@
+data=${1:6}
+unamestr=`uname`
+arr=$(echo $data | tr ";" "\n")
+
+
+downloadCorpus(){
+	corpusURI=$1
+	download=1
+	i=1
+	while [  $download -eq 1 ]; do
+		targetURI=$corpusURI'pt'$i'.tar'
+		exists=`curl -s --head $targetURI | head -n 1 | grep "HTTP/1.[01] [23].."`
+		if [ -z "$exists" ]; then
+			download=0
+		else	
+			echo "== download $targetURI"
+			curl -O $targetURI
+			i=$[i+1]
+		fi
+	done
+
+	echo "== download Models"
+	curl -O $corpusURI'MSE.tar'
+
+	echo "== download Metadata"
+	curl -O $corpusURI'metadata.tar'
+}
+
+unpackCorpus(){
+	
+	echo "== uncompress"
+	for f in $(find . -name 'pt*.tar'); do
+		tar xvf $f
+	done
+	tar xvf 'MSE.tar'
+	tar xvf 'metadata.tar'
+	
+	# -------- unpack qualitas corpus 
+	prefix=${1:6:2}
+	if [ "$prefix" == 'QC' ]; then
+		echo "== install Qualitas Corpus"
+		version=${1:9}
+		chmod +x 'QualitasCorpus-'$version'/bin/install.pl' 
+		'./QualitasCorpus-'$version'/bin/install.pl'
+		mv 'QualitasCorpus-'$version 'QC-'$version
+	fi	
+
+	# -------- remove downloaded archives
+	rm *.tar	
+}
+
+
+# -------- download
+
+for x in $corpora
+do
+	corpusURI='http://scg.unibe.ch/pangea/data/'$x'/'
+	downloadCorpus $corpusURI
+	unpackCorpus $x
+done
+
+
+echo "== download Moose"
+curl -O 'http://ci.moosetechnology.org/job/moose-latest-dev/lastSuccessfulBuild/artifact/moose/*zip*/moose.zip'
+unzip 'moose.zip'
+
+if [[ "$unamestr" == 'Linux' ]]; then 
+	echo "== download Cog for linux"
+	curl -OL 'http://pharo.gforge.inria.fr/ci/vm/nbcog/linux/NBCog-linux-latest.zip'
+	mv 'NBCog-linux-latest.zip' 'cog.zip'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+	echo "== download Cog for osx"
+	curl -OL 'http://pharo.gforge.inria.fr/ci/vm/nbcog/mac/NBCog-mac-latest.zip'
+	mv 'NBCog-mac-latest.zip' 'cog.zip'
+fi	
+unzip 'cog.zip'
+
+echo "== download analysis template"
+curl -OL 'http://scg.unibe.ch/pangea/.analysis_template.st'
+mv '.analysis_template.st' 'analysis_template.st'
+
+echo "== download analysis example"
+curl -OL 'http://scg.unibe.ch/pangea/.analysis_example.st'
+mv '.analysis_example.st' 'analysis_example.st'
+
+echo "== download run script"
+curl -OL 'http://scg.unibe.ch/pangea/tools/runAnalysis.sh'
+chmod +x "runAnalysis.sh"
+
+rm *.zip
+
+# -------- convert to UTF-8
+echo "== convert to UTF8"
+for f in $(find . -name '*.java'); do
+	iconv -f ISO-8859-1 -t UTF-8 $f>$f".conv" ; mv $f".conv" $f
+done
