@@ -1,0 +1,97 @@
+data=${1:6}
+unamestr=`uname`
+version="2.0"
+corpora=$(echo $data | tr "," "\n")
+
+downloadSources(){
+	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/src/'
+	download=1
+	i=1
+	while [  $download -eq 1 ]; do
+		targetURI=$corpusURI'pt'$i'.tar'
+		exists=`curl -s --head $targetURI | head -n 1 | grep "HTTP/1.[01] [23].."`
+		if [ -z "$exists" ]; then
+			download=0
+		else	
+			echo "== download $targetURI"
+			curl -O $targetURI
+			i=$[i+1]
+		fi
+	done
+
+	echo "== download Metadata"
+	curl -O $corpusURI'metadata.tar'
+}
+
+downloadCorpuses(){
+	corpusesURI='http://scg.unibe.ch/pangea/'$version'/data/content.txt'
+	curl -O $corpusesURI
+	
+	
+}
+
+unpackCorpus(){
+	
+	echo "== uncompress"
+	for f in $(find . -name 'pt*.tar'); do
+		tar xvf $f
+	done
+	tar xvf 'MSE.tar'
+	tar xvf 'metadata.tar'
+	
+	# -------- unpack qualitas corpus 
+	prefix=${1:6:2}
+	if [ "$prefix" == 'QC' ]; then
+		echo "== install Qualitas Corpus"
+		version=${1:9}
+		chmod +x 'QualitasCorpus-'$version'/bin/install.pl' 
+		'./QualitasCorpus-'$version'/bin/install.pl'
+		mv 'QualitasCorpus-'$version 'QC-'$version
+	fi	
+
+	# -------- remove downloaded archives
+	rm *.tar	
+}
+
+
+case "$1" in
+
+get)
+    case "$2" in
+        src) if [ $# == 4 ];
+ 			then
+                if [ "$3" == "-c" ];
+				then
+                    downloadSources $4
+				else
+					echo "wrong arguments"
+					exit;
+            	fi
+			else
+				downloadCorpuses
+			fi
+    	;;
+    	bin)
+    	;;
+    esac
+;;
+make)
+;;
+clean)
+;;
+edit)
+;;
+run)
+;;
+*) echo "Signal number $1 is not processed"
+;;
+esac
+
+# -------- download
+
+#for x in $corpora
+#do
+#	downloadCorpus $x
+#	unpackCorpus $x
+#done
+
