@@ -4,6 +4,8 @@ data=${1:6}
 unamestr=`uname`
 version="2.0"
 pwd=`pwd`
+dataFolder="$pwd/$version/data"
+
 
 corpora=$(echo $data | tr "," "\n")
 
@@ -16,7 +18,23 @@ makeRootFolderStructure() {
 	mkdir "$pwd/$version/tools"
 }
 
-downloadSources(){
+makeCorpusFolderStructure() {
+	#TODO: check if the folders exist before creating them
+	mkdir "$dataFolder/$1"        # create the corpus folder
+	mkdir "$dataFolder/$1/src"    
+	mkdir "$dataFolder/$1/models"	
+}
+
+#$1 corpus name
+#$1 extractor name
+makeModelFolderStructure() {
+	mkdir "$dataFolder/$1/models/$2"
+	mkdir "$dataFolder/$1/models/$2/extractor"
+	mkdir "$dataFolder/$1/models/$2/mse"
+	mkdir "$dataFolder/$1/models/$2/images"
+}
+
+downloadCorpusSources(){
 	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/src/'
 	download=1
 	i=1
@@ -27,17 +45,45 @@ downloadSources(){
 			download=0
 		else	
 			echo "== download $targetURI"
-			curl -O $targetURI
+			curl -o "$dataFolder/$1/src/pt$i.tar"  $targetURI
 			i=$[i+1]
 		fi
 	done
 }
 
-downloadCorpuses(){
-	corpusesURI='http://scg.unibe.ch/pangea/'$version'/data/content.txt'
-	curl -O $corpusesURI
+downloadExtractor() {
+	extractorURI="http://scg.unibe.ch/pangea/$version/data/$1/models/$2/extractor/$2.zip"
+	curl -o "$dataFolder/$1/models/$2/extractor/$2.zip" $extractorURI	
+}
+
+downloadCorpusModels() {
+	corporaURI="http://scg.unibe.ch/pangea/$version/data/$1/models/contents.txt"
+	curl -o "$dataFolder/$1/models/contents.txt" $corporaURI
 	
+	while read model; do
+  		echo "== download extractor $model"
+		
+		makeModelFolderStructure $1 $model
+		downloadExtractor $1 $model
+
+	done < "$dataFolder/$1/models/contents.txt"
+}
+
+downloadCorpus() {
+	makeCorpusFolderStructure $1
+	downloadCorpusSources $1
+	downloadCorpusModels $1
+}
+
+downloadAllCorpora(){
+	corporaURI='http://scg.unibe.ch/pangea/'$version'/data/content.txt'
+	curl -o "$dataFolder/content.txt" $corporaURI
 	
+	while read corpus; do
+  		echo "== download $corpus"
+		downloadCorpus $corpus
+
+	done < "$dataFolder/content.txt"
 }
 
 unpackCorpus(){
@@ -74,12 +120,14 @@ get)
 			if [ "$3" == "-c" ];
 			then
 				makeRootFolderStructure
+				downloadCorpus $4
 			else
 				echo "wrong arguments"
 				exit;
             	fi
 		else
-			downloadCorpuses
+			makeRootFolderStructure
+			downloadAllCorpora
 		fi
     	;;
     	bin)
