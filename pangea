@@ -5,6 +5,7 @@ unamestr=`uname`
 version="2.0"
 pwd=`pwd`
 dataFolder="$pwd/$version/data"
+toolsFolder="$pwd/$version/tools"
 
 
 corpora=$(echo $data | tr "," "\n")
@@ -94,6 +95,18 @@ downloadAllCorpora(){
 	done < "$dataFolder/content.txt"
 }
 
+downloadAndUnpackTools() {
+	toolsURI='http://scg.unibe.ch/pangea/'$version'/tools'
+	curl -o "$toolsFolder/image.tar" "$toolsURI/image.tar"
+	curl -o "$toolsFolder/vm.tar" "$toolsURI/vm.tar"
+
+	tar xvf "$toolsFolder/image.tar" -C "$toolsFolder/$1"
+	tar xvf "$toolsFolder/vm.tar" -C "$toolsFolder/$1"
+
+	rm "$toolsFolder/image.tar"
+	rm "$toolsFolder/vm.tar"
+}
+
 unpackCorpus(){
 	
 	echo "== uncompress"
@@ -128,7 +141,8 @@ get)
 			if [ "$3" == "-c" ];
 			then
 				makeRootFolderStructure
-				downloadCorpus $4
+				#downloadCorpus $4
+				downloadAndUnpackTools
 			else
 				echo "wrong arguments"
 				exit;
@@ -136,6 +150,7 @@ get)
 		else
 			makeRootFolderStructure
 			downloadAllCorpora
+			downloadAndUnpackTools
 		fi
     	;;
     	bin)
