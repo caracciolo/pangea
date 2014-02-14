@@ -69,10 +69,18 @@ downloadCorpusModels() {
 	done < "$dataFolder/$1/models/contents.txt"
 }
 
+unpackCorpusSource() {
+	echo "== uncompress $1"
+	for f in $(find "$dataFolder/$1/src/" -name 'pt*.tar'); do
+		tar xvf $f -C "$dataFolder/$1/src/"
+	done
+}
+
 downloadCorpus() {
 	makeCorpusFolderStructure $1
 	downloadCorpusSources $1
 	downloadCorpusModels $1
+	unpackCorpusSource $1
 }
 
 downloadAllCorpora(){
