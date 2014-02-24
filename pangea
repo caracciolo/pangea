@@ -22,7 +22,7 @@ makeRootFolderStructure() {
 makeCorpusFolderStructure() {
 	#TODO: check if the folders exist before creating them
 	mkdir "$dataFolder/$1"        # create the corpus folder
-	mkdir "$dataFolder/$1/src"    
+	mkdir "$dataFolder/$1/sources"    
 	mkdir "$dataFolder/$1/models"	
 }
 
@@ -36,7 +36,7 @@ makeModelFolderStructure() {
 }
 
 downloadCorpusSources(){
-	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/src/'
+	corpusURI='http://scg.unibe.ch/pangea/'$version'/data/'$1'/sources/'
 	download=1
 	i=1
 	while [  $download -eq 1 ]; do
@@ -46,7 +46,7 @@ downloadCorpusSources(){
 			download=0
 		else	
 			echo "== download $targetURI"
-			curl -o "$dataFolder/$1/src/pt$i.tar"  $targetURI
+			curl -o "$dataFolder/$1/sources/pt$i.tar"  $targetURI
 			i=$[i+1]
 		fi
 	done
@@ -72,8 +72,8 @@ downloadCorpusModels() {
 
 unpackCorpusSource() {
 	echo "== uncompress $1"
-	for f in $(find "$dataFolder/$1/src/" -name 'pt*.tar'); do
-		tar xvf $f -C "$dataFolder/$1/src/"
+	for f in $(find "$dataFolder/$1/sources/" -name 'pt*.tar'); do
+		tar xvf $f -C "$dataFolder/$1/sources/"
 	done
 }
 
@@ -141,7 +141,7 @@ get)
 			if [ "$3" == "-c" ];
 			then
 				makeRootFolderStructure
-				#downloadCorpus $4
+				downloadCorpus $4
 				downloadAndUnpackTools
 			else
 				echo "wrong arguments"
