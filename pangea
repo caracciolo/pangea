@@ -168,6 +168,9 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	QCname=$1
 	ExtrName=$2
 	
+	serachFolder="$dataFolder/$QCname/sources"
+	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	
 	cp "$toolsFolder/image/moose.image" "$toolsFolder/image/mooseCurrent.image"
 	cp "$toolsFolder/image/moose.changes" "$toolsFolder/image/mooseCurrent.changes"
 	
@@ -177,7 +180,6 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	$vm $moose config $PangeaRepo ConfigurationOfPangea --install 
 	
 	
-	srcFolders=`find $dataFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
 	
 	for f in $srcFolders; do
 		
@@ -192,10 +194,35 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	
 		echo "$VM $moose PangeaLoad --scr=$sourcePath --mse=$mseFile --imgDest=$imgDest "	
 		
-	done
+	done	
+	
+	
 
 	
 	rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
+}
+
+#####################################################################################################################
+## pangea make mse #######################################################################################################
+
+makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11" 
+	QCname=$1 
+	ExtrName=$2
+	
+	serachFolder="$dataFolder/$QCname/sources"
+	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	
+	
+	for srcFolder in $srcFolders; do
+		
+		mseFileName=`echo $srcFolder | awk -F"/" '{print $(NF-1)}' `
+		mseFileName=$mseFileName".mse"
+		
+		
+		`$dataFolder/$QCname/models/$ExtrName/extract.sh $srcFolder $mseFileName`
+			
+		
+	done	
 }
 
 
