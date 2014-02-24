@@ -1,4 +1,4 @@
-pangea get <src|bin> [-c QCr] 
+ pangea get <src|bin> [-c QCr] 
   -- bin #gets all it needs to run
   -- src #gets sources, available exporters and default moose image, if no parameter - get all
 	
@@ -18,7 +18,7 @@ pangea run [-c QCr|QCr.sysName] [-j 4] [-a analysis]
 	- examples
 	- data
 		- QC
-			- src
+			- sources
 				- JHD/JHD 1.2
 			- models
 				- VerveineJ-2.3 
