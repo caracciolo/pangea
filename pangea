@@ -82,9 +82,14 @@ downloadCorpusSources(){
 	done
 }
 
-downloadExtractor() {
-	extractorURI="http://scg.unibe.ch/pangea/$version/data/$1/models/$2/extractor/$2.zip"
-	curl -o "$dataFolder/$1/models/$2/extractor/$2.zip" $extractorURI	
+downloadExtractor() { ## downloadExtractor "QC-20120401r" "verveinej11"
+	
+	extractorURI="http://scg.unibe.ch/pangea/$version/data/$1/models/$2/extractor"
+	curl -o "$dataFolder/$1/models/$2/extractor/extractor.zip" "$extractorURI/extractor.zip"
+	curl -o "$dataFolder/$1/models/$2/extractor/extract.sh" "$extractorURI/extract.sh"
+	 
+	unzip "$dataFolder/$1/models/$2/extractor/extractor.zip" -d "$dataFolder/$1/models/$2/extractor"
+	rm "$dataFolder/$1/models/$2/extractor/extractor.zip"
 }
 
 downloadCorpusModels() {
@@ -101,17 +106,37 @@ downloadCorpusModels() {
 }
 
 unpackCorpusSource() {
-	echo "== uncompress $1"
-	for f in $(find "$dataFolder/$1/sources/" -name 'pt*.tar'); do
-		tar xvf $f -C "$dataFolder/$1/sources/"
+	QCname=$1
+	
+	echo "== uncompress $QCname"
+	for f in $(find "$dataFolder/$QCname/sources/" -name 'pt*.tar'); do
+		tar xvf $f -C "$dataFolder/$QCname/sources/"
 	done
 }
 
+unpackQualitasCorpus(){ ## unpackQualitasCorpus "QC-20120401r"
+	QCname=$1
+	installFile="$dataFolder/$QCname/sources/$QCname/bin/install.pl"
+	echo "== uncompress"
+	echo "$installFile"
+	# -------- unpack qualitas corpus 
+	if [ -e $installFile ]; then
+		echo "== install Qualitas Corpus"
+		chmod +x "$installFile"
+		echo "$installFile"
+		echo "y" | $installFile
+	fi	
+}
+
+
 downloadCorpus() {
-	makeCorpusFolderStructure $1
-	downloadCorpusSources $1
-	downloadCorpusModels $1
-	unpackCorpusSource $1
+	QCname=$1
+	
+	makeCorpusFolderStructure $QCname
+	downloadCorpusSources $QCname
+	downloadCorpusModels $QCname
+	unpackCorpusSource $QCname
+	unpackQualitasCorpus $QCname
 }
 
 downloadAllCorpora(){
@@ -136,6 +161,7 @@ downloadAndUnpackTools() {
 	rm "$toolsFolder/image.tar"
 	rm "$toolsFolder/vm.tar"
 }
+
 
 unpackCorpus(){
 	
@@ -169,7 +195,7 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	ExtrName=$2
 	
 	serachFolder="$dataFolder/$QCname/sources"
-	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
 	
 	cp "$toolsFolder/image/moose.image" "$toolsFolder/image/mooseCurrent.image"
 	cp "$toolsFolder/image/moose.changes" "$toolsFolder/image/mooseCurrent.changes"
@@ -191,7 +217,7 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		imgDest=`echo $mseFile | sed s/MSE.*//`
 		imgDest=$imgDest"images/"
 		
-	
+		
 		echo "$VM $moose PangeaLoad --scr=$sourcePath --mse=$mseFile --imgDest=$imgDest "	
 		
 	done	
@@ -210,18 +236,17 @@ makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11"
 	ExtrName=$2
 	
 	serachFolder="$dataFolder/$QCname/sources"
-	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v /$QCname/docs/`
 	
 	
 	for srcFolder in $srcFolders; do
 		
 		mseFileName=`echo $srcFolder | awk -F"/" '{print $(NF-1)}' `
-		mseFileName=$mseFileName".mse"
+		mseFilePath="$dataFolder/$QCname/models/$ExtrName/mse/$mseFileName.mse"
 		
-		
-		`$dataFolder/$QCname/models/$ExtrName/extract.sh $srcFolder $mseFileName`
+		chmod +x "$dataFolder/$QCname/models/$ExtrName/extractor/extract.sh"
+		(cd $dataFolder/$QCname/models/$ExtrName/extractor && $dataFolder/$QCname/models/$ExtrName/extractor/extract.sh $srcFolder $mseFilePath)
 			
-		
 	done	
 }
 
@@ -239,9 +264,9 @@ get)
 		then
 			if [ "$3" == "-c" ];
 			then
-				makeRootFolderStructure
-				downloadCorpus $4
-				downloadAndUnpackTools
+					makeRootFolderStructure
+					downloadCorpus $4
+					downloadAndUnpackTools
 			else
 				echo "wrong arguments"
 				exit;
@@ -260,6 +285,18 @@ make)
 	case "$2" in
 		mse)
 		echo "Start MSE creation"
+		if [ $# == 4 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+				makeMSE $4 "verveinej11"
+			else
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			echo "a";
+		fi
 		;;
 		imgs)
 		echo "Start image creation"
