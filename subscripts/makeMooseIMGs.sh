@@ -1,29 +1,44 @@
 #!/bin/bash  
 
+PangeaRepo='http://www.smalltalkhub.com/mc/SCG/Pangea/main'
+dataFolder=`pwd`"/2.0/data"
+toolsFolder=`pwd`"/2.0/tools"
 
 makeImages(){
-	mseFolder=$1 
-	moose=$2
-	vm=$3
+	QCversion=$1 
+	QCname=$2
+	ExtrName=$3
 	
-	if[-z $2]; then
-		moose="2.0/tools/image/moose.image"
+	if [ -z $2 ]; 
+	then
+		moose="$toolsFolder/image/moose.image"
 	fi	
 	
-	if[-z $3]; then
+	if [-z $3]; then
 		if [[ "$unamestr" == 'Linux' ]]; then
-		   vm="2.0/tools/pharo-linux/pharo  -vm-display-null "
+		   vm="$toolsFolder/pharo-linux/pharo  -vm-display-null "
 		elif [[ "$unamestr" == 'Darwin' ]]; then
-		   vm="2.0/tools/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
+		   vm="$toolsFolder/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
 		fi
 	fi	
 	
 	
+	$vm $moose config $PangeaRepo ConfigurationOfPangea --install 
 	
-	for mse in $(ls $mseFolder); do
+	
+	srcFolders=`find $dataFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	
+	for f in $srcFolders; do
+		
+		sourcePath=$f
+		mseFileName=`echo $sourcePath | awk -F"/" '{print $(NF-1)}' `
+		mseFile=`find $dataFolder  | grep mseFileName".mse" | grep $ExtrName`
+		imgDest=`echo $mseFile | sed s/MSE.*//`
+		imgDest=$imgDest"images/"
+		
 		
 		#TODO: parametrize model.mse file name in buildPreLoaded.st
-		$vm $moose buildPreLoaded.st
+		echo "$vm $moose PangeaLoad --scr=$sourcePath --mse=$mseFile --imgDest=$imgDest "
 		   
 
 			
@@ -36,4 +51,4 @@ makeImages(){
 
 
 
-makeImages "2.0/data/QC-20120401r/models/verveinej11/MSE"
+makeImages "QC-20120401r" "verveinej11"

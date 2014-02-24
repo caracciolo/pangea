@@ -6,9 +6,34 @@ version="2.0"
 pwd=`pwd`
 dataFolder="$pwd/$version/data"
 toolsFolder="$pwd/$version/tools"
+PangeaRepo="http://www.smalltalkhub.com/mc/SCG/Pangea/main"
 
 
-corpora=$(echo $data | tr "," "\n")
+TMP_OS=`uname | tr "[:upper:]" "[:lower:]"`
+if [[ "{$TMP_OS}" = *darwin* ]]; then
+    OS="mac";
+elif [[ "{$TMP_OS}" = *linux* ]]; then
+    OS="linux";
+elif [[ "{$TMP_OS}" = *win* ]]; then
+    OS="win";
+elif [[ "{$TMP_OS}" = *mingw* ]]; then
+    OS="win";
+else
+    echo "Unsupported OS";
+    exit 1;
+fi
+
+
+if [[ "$OS" == 'linux' ]]; 
+then
+   VM="$toolsFolder/pharo-linux/pharo  -vm-display-null "
+elif [[ "$OS" == 'mac' ]]; 
+then
+   VM="$toolsFolder/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
+fi
+
+
+
 
 
 #####################################################################################################################
@@ -134,6 +159,45 @@ unpackCorpus(){
 	# -------- remove downloaded archives
 	rm *.tar	
 }
+
+
+#####################################################################################################################
+## pangea make image #######################################################################################################
+
+makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
+	QCname=$1
+	ExtrName=$2
+	
+	cp "$toolsFolder/image/moose.image" "$toolsFolder/image/mooseCurrent.image"
+	cp "$toolsFolder/image/moose.changes" "$toolsFolder/image/mooseCurrent.changes"
+	
+
+	moose="$toolsFolder/image/mooseCurrent.image"
+	
+	$vm $moose config $PangeaRepo ConfigurationOfPangea --install 
+	
+	
+	srcFolders=`find $dataFolder -type d -path "*/src" | grep -v /src/ | grep -v sources/docs/`
+	
+	for f in $srcFolders; do
+		
+		sourcePath=$f
+		mseFileName=`echo $sourcePath | awk -F"/" '{print $(NF-1)}' `
+		mseFileName=$mseFileName".mse"
+		
+		mseFile=`find $dataFolder  | grep $mseFileName | grep $ExtrName`
+		imgDest=`echo $mseFile | sed s/MSE.*//`
+		imgDest=$imgDest"images/"
+		
+	
+		echo "$VM $moose PangeaLoad --scr=$sourcePath --mse=$mseFile --imgDest=$imgDest "	
+		
+	done
+
+	
+	rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
+}
+
 
 #####################################################################################################################
 ## pangea make ######################################################################################################

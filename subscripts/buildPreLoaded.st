@@ -13,5 +13,4 @@ model rootFolder:'../src'.
 (FileStream readOnlyFileNamed:'moose.changes' ) toFile:(FileStream forceNewFileNamed:'moosePreloaded.changes').
 SmalltalkImage current saveAs:'moosePreloaded'."
 
-WorldState addDeferredUIMessage: [
-	SmalltalkImage current snapshot: true andQuit: true ].
+WorldState addDeferredUIMessage: [	SmalltalkImage current snapshot: true andQuit: true ].
