@@ -1,4 +1,4 @@
-#!/bin/sh/
+#!/bin/sh
 
 data=${1:6}
 unamestr=`uname`
@@ -254,6 +254,13 @@ makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11"
 #####################################################################################################################
 ## pangea make ######################################################################################################
 
+if [ $# -eq 0 ]
+  then
+    echo "usage: pangea get <src|bin> [-c QCr] "
+    echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
+    echo "       pangea clean <all|mse|imgs> [-c QCr]"
+    exit
+fi
 
 case "$1" in
 
