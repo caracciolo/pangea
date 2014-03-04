@@ -1,3 +1,11 @@
+Things that work 
+(as of Tuesday March 4)
+- get src
+- make mse
+- make imgs
+
+
+
  pangea get <src|bin> [-c QCr] 
   -- bin #gets all it needs to run
   -- src #gets sources, available exporters and default moose image, if no parameter - get all
