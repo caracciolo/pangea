@@ -26,10 +26,10 @@ fi
 
 if [[ "$OS" == 'linux' ]]; 
 then
-   VM="$toolsFolder/pharo-linux/pharo  -vm-display-null "
+   VM="$toolsFolder/vm/pharo-linux/pharo  -vm-display-null "
 elif [[ "$OS" == 'mac' ]]; 
 then
-   VM="$toolsFolder/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
+   VM="$toolsFolder/vm/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
 fi
 
 
@@ -83,26 +83,30 @@ downloadCorpusSources(){
 }
 
 downloadExtractor() { ## downloadExtractor "QC-20120401r" "verveinej11"
+	QCname=$1
+	ExtrName=$2
 	
-	extractorURI="http://scg.unibe.ch/pangea/$version/data/$1/models/$2/extractor"
-	curl -o "$dataFolder/$1/models/$2/extractor/extractor.zip" "$extractorURI/extractor.zip"
-	curl -o "$dataFolder/$1/models/$2/extractor/extract.sh" "$extractorURI/extract.sh"
+	extractorURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/$ExtrName/extractor"
+	curl -o "$dataFolder/$QCname/models/$ExtrName/extractor/extractor.zip" "$extractorURI/extractor.zip"
+	curl -o "$dataFolder/$QCname/models/$ExtrName/extractor/extract.sh" "$extractorURI/extract.sh"
 	 
-	unzip "$dataFolder/$1/models/$2/extractor/extractor.zip" -d "$dataFolder/$1/models/$2/extractor"
-	rm "$dataFolder/$1/models/$2/extractor/extractor.zip"
+	unzip "$dataFolder/$QCname/models/$ExtrName/extractor/extractor.zip" -d "$dataFolder/$QCname/models/$ExtrName/extractor"
+	rm "$dataFolder/$QCname/models/$ExtrName/extractor/extractor.zip"
 }
 
-downloadCorpusModels() {
-	corporaURI="http://scg.unibe.ch/pangea/$version/data/$1/models/contents.txt"
-	curl -o "$dataFolder/$1/models/contents.txt" $corporaURI
+downloadCorpusModels() { ## downloadCorpusModels "QC-20120401r"
+	QCname=$1
+
+	corporaURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/contents.txt"
+	curl -o "$dataFolder/$QCname/models/contents.txt" $corporaURI
 	
 	while read model; do
   		echo "== download extractor $model"
 		
-		makeModelFolderStructure $1 $model
-		downloadExtractor $1 $model
+		makeModelFolderStructure $QCname $model
+		downloadExtractor $QCname $model
 
-	done < "$dataFolder/$1/models/contents.txt"
+	done < "$dataFolder/$QCname/models/contents.txt"
 }
 
 unpackCorpusSource() {
@@ -203,29 +207,24 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 
 	moose="$toolsFolder/image/mooseCurrent.image"
 	
-	$vm $moose config $PangeaRepo ConfigurationOfPangea --install 
-	
+	$VM $moose config $PangeaRepo ConfigurationOfPangea --install=development
 	
 	
 	for f in $srcFolders; do
 		
 		sourcePath=$f
 		mseFileName=`echo $sourcePath | awk -F"/" '{print $(NF-1)}' `
+		mseFileWithoutExtension=$mseFileName
 		mseFileName=$mseFileName".mse"
 		
 		mseFile=`find $dataFolder  | grep $mseFileName | grep $ExtrName`
 		imgDest=`echo $mseFile | sed s/MSE.*//`
-		imgDest=$imgDest"images/"
+		imgDest=$imgDest"/images/"
 		
-		
-		echo "$VM $moose PangeaLoad --scr=$sourcePath --mse=$mseFile --imgDest=$imgDest "	
-		
+		echo "$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension"	
 	done	
 	
-	
-
-	
-	rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
+	#rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
 }
 
 #####################################################################################################################
@@ -300,6 +299,18 @@ make)
 		;;
 		imgs)
 		echo "Start image creation"
+		if [ $# == 4 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+				makeImages $4 "verveinej11"
+			else
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			echo "a";
+		fi
 		;;
 	esac
 ;;
