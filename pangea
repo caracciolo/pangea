@@ -221,7 +221,8 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		imgDest=`echo $mseFile | sed s/MSE.*//`
 		imgDest=$imgDest"/images/"
 		
-		echo "$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension"	
+		echo "$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension"
+		$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension	
 	done	
 	
 	#rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
