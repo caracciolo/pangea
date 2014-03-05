@@ -217,13 +217,14 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		mseFileWithoutExtension=$mseFileName
 		mseFileName=$mseFileName".mse"
 		
-		mseFile=`find $dataFolder  | grep $mseFileName | grep $ExtrName`
+		mseFile=`find $dataFolder/$QCname  | grep $mseFileName | grep $ExtrName`
 		imgDest=`echo $mseFile | sed s/MSE.*//`
 		imgDest=${imgDest/$mseFileName/}
 		imgDest=${imgDest/mse\//}
 		imgDest=$imgDest"images/"
 		
-		$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension	
+		absoluteScrFolder=$dataFolder/$QCname/sources/$QCname/Systems
+		$VM $moose PangeaLoadMSE --source=$absoluteScrFolder --mse=$mseFile --name=$mseFileWithoutExtension	
 		mv "$toolsFolder/image/$mseFileWithoutExtension.image" $imgDest
 		mv "$toolsFolder/image/$mseFileWithoutExtension.changes" $imgDest
 		
@@ -243,13 +244,15 @@ makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11"
 	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v /$QCname/docs/`
 	
 	
-	for srcFolder in $srcFolders; do
-		
+	for srcFolder in $srcFolders; do		
 		mseFileName=`echo $srcFolder | awk -F"/" '{print $(NF-1)}' `
 		mseFilePath="$dataFolder/$QCname/models/$ExtrName/mse/$mseFileName.mse"
 		
+		srcRelativeFolder=`echo $srcFolder | awk -F"/" '{print $(NF-2)"/"$(NF-1)}'`
+		runFolder="$dataFolder/$QCname/sources/$QCname/Systems"
+				
 		chmod +x "$dataFolder/$QCname/models/$ExtrName/extractor/extract.sh"
-		(cd $dataFolder/$QCname/models/$ExtrName/extractor && $dataFolder/$QCname/models/$ExtrName/extractor/extract.sh $srcFolder $mseFilePath)
+		(cd $dataFolder/$QCname/models/$ExtrName/extractor && $dataFolder/$QCname/models/$ExtrName/extractor/extract.sh "$srcRelativeFolder/src" $mseFilePath $runFolder)
 			
 	done	
 }
