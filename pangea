@@ -194,6 +194,7 @@ unpackCorpus(){
 ## pangea make image #######################################################################################################
 
 makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
+
 	QCname=$1
 	ExtrName=$2
 	
@@ -218,10 +219,13 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		
 		mseFile=`find $dataFolder  | grep $mseFileName | grep $ExtrName`
 		imgDest=`echo $mseFile | sed s/MSE.*//`
-		imgDest=$imgDest"/images/"
+		imgDest=${imgDest/$mseFileName/}
+		imgDest=${imgDest/mse\//}
+		imgDest=$imgDest"images/"
 		
 		$VM $moose PangeaLoadMSE --source=$sourcePath --mse=$mseFile --name=$mseFileWithoutExtension	
-		mv $mseFile 
+		mv "$toolsFolder/image/$mseFileWithoutExtension.image" $imgDest
+		mv "$toolsFolder/image/$mseFileWithoutExtension.changes" $imgDest
 		
 	done	
 	
