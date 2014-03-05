@@ -205,7 +205,7 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	cp "$toolsFolder/image/Moose.changes" "$toolsFolder/image/MooseCurrent.changes"
 	
 
-	moose="$toolsFolder/image/mooseCurrent.image"
+	moose="$toolsFolder/image/MooseCurrent.image"
 	
 	$VM $moose config $PangeaRepo ConfigurationOfPangea --install=development
 	
