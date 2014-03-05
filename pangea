@@ -201,8 +201,8 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	serachFolder="$dataFolder/$QCname/sources"
 	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
 	
-	cp "$toolsFolder/image/moose.image" "$toolsFolder/image/mooseCurrent.image"
-	cp "$toolsFolder/image/moose.changes" "$toolsFolder/image/mooseCurrent.changes"
+	cp "$toolsFolder/image/Moose.image" "$toolsFolder/image/MooseCurrent.image"
+	cp "$toolsFolder/image/Moose.changes" "$toolsFolder/image/MooseCurrent.changes"
 	
 
 	moose="$toolsFolder/image/mooseCurrent.image"
