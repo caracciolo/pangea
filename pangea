@@ -288,7 +288,7 @@ runScript() {
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
 			# echo $imageFile
-			$VM $imageFile st $pwd/$Script
+			$VM $imageFile st $pwd/$Script 2>/dev/null
 	done
 }
 
