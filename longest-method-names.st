@@ -1,9 +1,10 @@
 "Filter out uninteresting methods (e.g. test cases, constructors)"
-interestingMethods := MooseModel root first allModelMethods reject: [ :each |
-	each isStub 
-		or: [ ('*.*' match: each name) 
-			or: [ ('test*' match: each name )
-				or: [ each isConstructor ] ] ] ].
+interestingMethods := MooseModel root first allModelMethods 
+	reject: [ :each |
+		each isStub 
+			or: [ ('*.*' match: each name) 
+				or: [ ('test*' match: each name )
+					or: [ each isConstructor ] ] ] ].
 
 "Initialize the top10"
 top10 :=  SortedCollection sortBlock: [:a :b| a name size > b name size].
