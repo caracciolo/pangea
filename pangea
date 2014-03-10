@@ -6,6 +6,7 @@ pwd=`pwd`
 dataFolder="$pwd/$version/data"
 toolsFolder="$pwd/$version/tools"
 PangeaRepo="http://www.smalltalkhub.com/mc/SCG/Pangea/main"
+defaultExtractor="verveinej11"
 
 
 TMP_OS=`uname | tr "[:upper:]" "[:lower:]"`
@@ -189,6 +190,22 @@ unpackCorpus(){
 	rm *.tar	
 }
 
+downloadAndUnpackImagesForCorpus() {
+	QName=$1
+	ExtrName=$2
+
+	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
+	imagesURI="http://scg.unibe.ch/pangea/$version/data/$QName/models/$ExtrName/images/images.tar"
+	curl -o "$imagesURI" "$imagesFolder/images.tar"
+
+	tar xvf "$imagesFolder/images.tar" -C "$imagesFolder"
+
+
+	# rm "$toolsFolder/image.tar"
+	# rm "$toolsFolder/vm.tar"
+
+}
+
 
 #####################################################################################################################
 ## pangea make image #######################################################################################################
@@ -292,6 +309,23 @@ get)
 		fi
     	;;
     	bin)
+		if [ $# == 4 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+					# makeRootFolderStructure
+					# downloadCorpus $4
+					downloadAndUnpackImagesForCorpus $4 $defaultExtractor
+			else
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			# makeRootFolderStructure
+			# downloadAllCorpora
+			downloadAndUnpackImagesForAllCorpora
+		fi
+
     	;;
     esac
 ;;
