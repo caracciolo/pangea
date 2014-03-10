@@ -191,13 +191,14 @@ unpackCorpus(){
 }
 
 downloadAndUnpackImagesForCorpus() {
-	QName=$1
+	QCname=$1
 	ExtrName=$2
 
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
-	imagesURI="http://scg.unibe.ch/pangea/$version/data/$QName/models/$ExtrName/images/images.tar"
-	curl -o "$imagesURI" "$imagesFolder/images.tar"
-
+	imagesURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/$ExtrName/images/images.tar"
+	# echo $imagesURI
+	# echo $imagesFolder/images.tar
+	curl -o "$imagesFolder/images.tar" "$imagesURI"
 	tar xvf "$imagesFolder/images.tar" -C "$imagesFolder"
 
 
@@ -274,6 +275,22 @@ makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11"
 	done	
 }
 
+#####################################################################################################################
+## pangea run ######################################################################################################
+
+runScript() {
+	QCname=$1 
+	ExtrName=$2
+	Script=$3
+
+	echo $VM
+	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
+	
+	for imageFile in `find $imagesFolder |  grep "image$" `; do
+			# echo $imageFile
+			$VM $imageFile st $pwd/$Script
+	done
+}
 
 #####################################################################################################################
 ## pangea make ######################################################################################################
@@ -285,6 +302,8 @@ if [ $# -eq 0 ]
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
     exit
 fi
+
+
 
 case "$1" in
 
@@ -368,6 +387,23 @@ clean)
 edit)
 ;;
 run)
+	case "$2" in
+		script)
+		echo "Run script"
+		if [ $# == 5 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+				runScript $4 "verveinej11" $5
+			else
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			echo "a";
+		fi
+		;;
+	esac
 ;;
 *) echo "Signal number $1 is not processed"
 ;;
