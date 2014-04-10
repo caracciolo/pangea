@@ -285,7 +285,6 @@ runScript() {
 
 	echo $VM
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
-	echo "images folder: " $imagesFolder
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
 			# echo $imageFile
@@ -304,6 +303,7 @@ if [ $# -eq 0 ]
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
     echo "       pangea run script [-c QCr] <script-name.st>"
     echo "       pangea corpora"
+    echo "       pangea images [-c QCr]"
     exit
 fi
 
@@ -390,6 +390,18 @@ make)
 	esac
 ;;
 clean)
+;;
+images)
+	case "$2" in
+		"-c")
+		if [ $# == 3 ];
+			then
+			echo "$dataFolder/$3/models/verveinej11/images"
+		else
+			echo "expecting corpus name"
+		fi
+		
+	esac
 ;;
 edit)
 ;;
