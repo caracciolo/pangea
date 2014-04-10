@@ -300,6 +300,7 @@ if [ $# -eq 0 ]
     echo "usage: pangea get <src|bin> [-c QCr] "
     echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
+    echo "		 pangea corpora"
     exit
 fi
 
@@ -307,6 +308,9 @@ fi
 
 case "$1" in
 
+corpora)
+	ls 2.0/data/
+	;;
 get)
     case "$2" in
         src) 
