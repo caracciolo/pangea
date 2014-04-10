@@ -285,9 +285,11 @@ runScript() {
 
 	echo $VM
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
+	echo "images folder: " $imagesFolder
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
 			# echo $imageFile
+			echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script 2>/dev/null
 	done
 }
@@ -300,7 +302,8 @@ if [ $# -eq 0 ]
     echo "usage: pangea get <src|bin> [-c QCr] "
     echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
-    echo "		 pangea corpora"
+    echo "       pangea run script [-c QCr] <script-name.st>"
+    echo "       pangea corpora"
     exit
 fi
 
@@ -398,6 +401,7 @@ run)
 		then
 			if [ "$3" == "-c" ];
 			then
+				echo "running script..."
 				runScript $4 "verveinej11" $5
 			else
 				echo "wrong arguments"
