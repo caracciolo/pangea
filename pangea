@@ -8,6 +8,8 @@ toolsFolder="$pwd/$version/tools"
 PangeaRepo="http://www.smalltalkhub.com/mc/SCG/Pangea/main"
 defaultExtractor="verveinej11"
 
+# useful function
+echoerr() { echo "$@" 1>&2; }
 
 TMP_OS=`uname | tr "[:upper:]" "[:lower:]"`
 if [[ "{$TMP_OS}" = *darwin* ]]; then
@@ -287,7 +289,7 @@ runScript() {
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
-			# echo $imageFile
+			echoerr "--" `(basename "$imageFile")`
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script 2>/dev/null
 	done
