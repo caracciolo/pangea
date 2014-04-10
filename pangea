@@ -283,12 +283,12 @@ runScript() {
 	ExtrName=$2
 	Script=$3
 
-	echo $VM
+	#echo $VM
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
 			# echo $imageFile
-			echo $VM $imageFile st $pwd/$Script 2>/dev/null
+			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script 2>/dev/null
 	done
 }
@@ -408,12 +408,12 @@ edit)
 run)
 	case "$2" in
 		script)
-		echo "Run script"
+		# echo "Run script"
 		if [ $# == 5 ]; 
 		then
 			if [ "$3" == "-c" ];
 			then
-				echo "running script..."
+				# echo "running script..."
 				runScript $4 "verveinej11" $5
 			else
 				echo "wrong arguments"
