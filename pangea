@@ -286,6 +286,7 @@ runScript() {
 	Script=$3
 
 	#echo $VM
+	echoerr `date`
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
@@ -293,6 +294,7 @@ runScript() {
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script 2>/dev/null
 	done
+	echoerr `date`
 }
 
 #####################################################################################################################
@@ -406,6 +408,9 @@ images)
 	esac
 ;;
 edit)
+;;
+open)
+	open 2.0/data/QualitasCorpus-20120401r/sources/QualitasCorpus-20120401r/Systems/$2
 ;;
 run)
 	case "$2" in
