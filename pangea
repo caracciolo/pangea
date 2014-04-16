@@ -101,12 +101,18 @@ downloadCorpusModels() { ## downloadCorpusModels "QC-20120401r"
 
 	corporaURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/contents.txt"
 	curl -o "$dataFolder/$QCname/models/contents.txt" $corporaURI
+
 	
 	while read model; do
   		echo "== download extractor $model"
+  		remoteTar="http://scg.unibe.ch/pangea/$version/data/$QCname/models/$model/mse/mse.tar"
+  		localTar="$dataFolder/$QCname/models/$model/mse/mse.tar"
+  		localMSEFolder="$dataFolder/$QCname/models/$model/mse/"
 		
 		makeModelFolderStructure $QCname $model
 		downloadExtractor $QCname $model
+		curl -o $localTar $remoteTar
+		tar xvf $localTar -C $localMSEFolder
 
 	done < "$dataFolder/$QCname/models/contents.txt"
 }
@@ -302,7 +308,7 @@ runScript() {
 
 if [ $# -eq 0 ]
   then
-    echo "usage: pangea get <src|bin> [-c QCr] "
+    echo "usage: pangea get <src|mse|imgs> [-c QCr] "
     echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
     echo "       pangea run script [-c QCr] <script-name.st>"
@@ -330,7 +336,10 @@ corpora)
 	;;
 get)
     case "$2" in
-        src) 
+    	src)
+		;;
+        
+        ) 
 		if [ $# == 4 ]; 
 		then
 			if [ "$3" == "-c" ];
@@ -347,8 +356,8 @@ get)
 			downloadAllCorpora
 			downloadAndUnpackTools
 		fi
-    	;;
-    	bin)
+    	;;    	
+    	imgs)
 		if [ $# == 4 ]; 
 		then
 			if [ "$3" == "-c" ];
