@@ -317,8 +317,16 @@ case "$1" in
 
 corpora)
 	corporaURI='http://scg.unibe.ch/pangea/2.0/data/content.txt'
-	echo "Available: " `curl -s $corporaURI`
-	echo "Installed: " `(cd 2.0/data/; ls -d */ | sed s/\\\///g)`
+	echo "Available: " 
+	echo " " `curl -s $corporaURI`
+
+	echo "Installed: "
+	if ! [ -d 2.0 ]
+	then
+		echo " none"
+	else
+		echo " " `(cd 2.0/data/ && ls -d */ | sed s/\\\///g)`
+	fi
 	;;
 get)
     case "$2" in
