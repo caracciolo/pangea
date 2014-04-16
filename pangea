@@ -223,10 +223,8 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 
 	QCname=$1
 	ExtrName=$2
-	
 	serachFolder="$dataFolder/$QCname/sources"
-	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
-	echo $srcFolder
+	srcFolders=`find $serachFolder -type d -maxdepth 5 -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
 	cp "$toolsFolder/image/Moose.image" "$toolsFolder/image/MooseCurrent.image"
 	cp "$toolsFolder/image/Moose.changes" "$toolsFolder/image/MooseCurrent.changes"
 	
@@ -267,7 +265,7 @@ makeMSE(){  ## makeMSE  "QC-20120401r" "verveinej11"
 	ExtrName=$2
 	
 	serachFolder="$dataFolder/$QCname/sources"
-	srcFolders=`find $serachFolder -type d -path "*/src" | grep -v /src/ | grep -v /$QCname/docs/`
+	srcFolders=`find $serachFolder -type d -maxdepth 5  -path "*/src" | grep -v /src/ | grep -v /$QCname/docs/`
 	
 	
 	for srcFolder in $srcFolders; do		
