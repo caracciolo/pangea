@@ -29,9 +29,11 @@ fi
 if [[ "$OS" == 'linux' ]]; 
 then
    VM="$toolsFolder/vm/pharo-linux/pharo  -vm-display-null "
+   VM_UI="$toolsFolder/vm/pharo-linux/pharo  "
 elif [[ "$OS" == 'mac' ]]; 
 then
    VM="$toolsFolder/vm/pharo-mac/Pharo.app/Contents/MacOS/Pharo --headless --memory 1536m"
+   VM_UI="$toolsFolder/vm/pharo-mac/Pharo.app/Contents/MacOS/Pharo --memory 1536m"
 fi
 
 
@@ -251,6 +253,8 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		$VM $moose PangeaLoadMSE --source=$absoluteScrFolder --mse=$mseFile --name=$mseFileWithoutExtension	
 		mv "$toolsFolder/image/$mseFileWithoutExtension.image" $imgDest
 		mv "$toolsFolder/image/$mseFileWithoutExtension.changes" $imgDest
+		mv "$toolsFolder/image/PharoV20.sources" $imgDest
+		mv "$toolsFolder/image/PharoV10.sources" $imgDest
 		
 	done	
 	
@@ -421,13 +425,22 @@ images)
 		else
 			echo "expecting corpus name"
 		fi
-		
 	esac
 ;;
-edit)
+experiment)
+	case "$2" in
+			"-c")
+			if [ $# == 3 ];
+				then
+				first=`ls $dataFolder/$3/models/verveinej11/images/*.image | head -1`
+				$VM_UI $first
+			else
+				echo "expecting corpus name"
+			fi
+		esac
 ;;
-open)
-	open 2.0/data/QualitasCorpus-20120401r/sources/QualitasCorpus-20120401r/Systems/$2
+
+edit)
 ;;
 run)
 	case "$2" in
