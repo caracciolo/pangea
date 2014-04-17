@@ -117,6 +117,8 @@ downloadCorpusModels() { ## downloadCorpusModels "QC-20120401r"
 		tar xvf $localTar -C $localMSEFolder
 
 	done < "$dataFolder/$QCname/models/contents.txt"
+	echo "removing the mse.tar..."
+	rm "$dataFolder/$QCname/models/$model/mse/mse.tar"
 }
 
 unpackCorpusSource() {
@@ -126,6 +128,8 @@ unpackCorpusSource() {
 	for f in $(find "$dataFolder/$QCname/sources/" -name 'pt*.tar'); do
 		tar xvf $f -C "$dataFolder/$QCname/sources/"
 	done
+	echo "removing the source archives..."
+	rm "$dataFolder/$QCname/sources/pt*.tar"
 }
 
 unpackQualitasCorpus(){ ## unpackQualitasCorpus "QC-20120401r"
@@ -305,25 +309,7 @@ runScript() {
 	echoerr `date`
 }
 
-#####################################################################################################################
-## pangea make ######################################################################################################
-
-if [ $# -eq 0 ]
-  then
-    echo "usage: pangea get <src|mse|imgs> [-c QCr] "
-    echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
-    echo "       pangea clean <all|mse|imgs> [-c QCr]"
-    echo "       pangea run script [-c QCr] <script-name.st>"
-    echo "       pangea corpora"
-    echo "       pangea images [-c QCr]"
-    exit
-fi
-
-
-
-case "$1" in
-
-corpora)
+listCorpora() {
 	corporaURI='http://scg.unibe.ch/pangea/2.0/data/content.txt'
 	echo "Available: " 
 	echo " " `curl -s $corporaURI`
@@ -335,6 +321,31 @@ corpora)
 	else
 		echo " " `(cd 2.0/data/ && ls -d */ | sed s/\\\///g)`
 	fi
+}
+#####################################################################################################################
+## pangea make ######################################################################################################
+
+if [ $# -eq 0 ]
+  then
+   	echo "---=== Usage ===---"
+    echo "       pangea get <src|mse|imgs> [-c QCr] "
+    echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
+    echo "       pangea clean <all|mse|imgs> [-c QCr]"
+    echo "       pangea run script [-c QCr] <script-name.st>"
+    echo "       pangea corpora"
+    echo "       pangea images [-c QCr]"
+    echo ""
+    echo "---=== Corpora ===---"
+    listCorpora
+    exit
+fi
+
+
+
+case "$1" in
+
+corpora)
+	listCorpora
 	;;
 get)
     case "$2" in
