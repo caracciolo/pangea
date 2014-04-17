@@ -1,4 +1,4 @@
-"print the number of classes in the system"
+"Print the number of classes in the system"
 Script is: [ 
 
 	CommaSeparated values
