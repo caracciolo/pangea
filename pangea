@@ -432,6 +432,8 @@ images)
 		"-c")
 		if [ $# == 3 ];
 			then
+			ls $dataFolder/$3/models/verveinej11/images/*.image
+			echo "Images Folder:"
 			echo "$dataFolder/$3/models/verveinej11/images"
 		else
 			echo "expecting corpus name"
@@ -441,12 +443,12 @@ images)
 experiment)
 	case "$2" in
 			"-c")
-			if [ $# == 3 ];
+			if [ $# == 4 ];
 				then
-				first=`ls $dataFolder/$3/models/verveinej11/images/*.image | head -1`
+				first=`find $dataFolder/$3/models/verveinej11/images -iname $4*.image | head -1`
 				$VM_UI $first
 			else
-				echo "expecting corpus name"
+				echo "expecting corpus name and system name"
 			fi
 		esac
 ;;
