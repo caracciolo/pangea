@@ -376,6 +376,7 @@ get)
 		then
 			if [ "$3" == "-c" ];
 			then
+					echo "==getting the mse files for $4"
 					makeRootFolderStructure
 					downloadOnlyMSE $4
 					downloadAndUnpackTools
