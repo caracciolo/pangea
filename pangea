@@ -334,6 +334,7 @@ if [ $# -eq 0 ]
     echo "       pangea run script [-c QCr] <script-name.st>"
     echo "       pangea corpora"
     echo "       pangea images [-c QCr]"
+    echo "       pangea experiment [-c QCr] [system name]"
     echo ""
     echo "---=== Corpora ===---"
     listCorpora
