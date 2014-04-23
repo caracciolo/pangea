@@ -39,6 +39,16 @@ fi
 
 
 
+getDefaultExtractor() {
+	corpus=$1
+	if [[ "$corpus" == 'Squeaksource-100' ]];
+	then
+		echo "moose"
+	else
+		echo  "verveinej11"
+	fi
+}
+
 
 #####################################################################################################################
 ## pangea get #######################################################################################################
@@ -329,6 +339,7 @@ listCorpora() {
 		echo " " `(cd 2.0/data/ && ls -d */ | sed s/\\\///g)`
 	fi
 }
+
 #####################################################################################################################
 ## pangea make ######################################################################################################
 
@@ -416,18 +427,15 @@ make)
 			echo "a";
 		fi
 		;;
+
 		imgs)
 		echo "Start image creation"
 		if [ "$3" == "-c" ];
 		then	
-			if [ $# == 5 ]; 
+			if [ $# == 4 ]; 
 			then
-				makeImages $4 $5
-			else
-				if [ $# == 4 ];
-				then
-					makeImages $4 "verveinej11"
-				fi	
+				extractor=`getDefaultExtractor $4`
+				makeImages $4 $extractor
 			fi
 		else
 			echo "wrong arguments"
@@ -458,7 +466,7 @@ experiment)
 				then
 				first=`find $dataFolder/$3/models/$4/images -iname $5*.image | head -1`
 				# echo "find $dataFolder/$3/models/$4/images -iname $5*.image | head -1"
-				$VM_UI $first
+				$VM_UI $first &
 			else
 				echo "expecting corpus name and system name"
 			fi
@@ -476,7 +484,8 @@ run)
 			if [ "$3" == "-c" ];
 			then
 				# echo "running script..."
-				runScript $4 "verveinej11" $5
+				extractor=`getDefaultExtractor $4`
+				runScript $4 $extractor $5
 			else
 				echo "wrong arguments"
 				exit;
