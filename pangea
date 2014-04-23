@@ -115,10 +115,11 @@ downloadCorpusModels() { ## downloadCorpusModels "QC-20120401r"
 		downloadExtractor $QCname $model
 		curl -o $localTar $remoteTar
 		tar xvf $localTar -C $localMSEFolder
-
+		
+		echo "removing the mse.tar..."
+		rm "$dataFolder/$QCname/models/$model/mse/mse.tar"
 	done < "$dataFolder/$QCname/models/contents.txt"
-	echo "removing the mse.tar..."
-	rm "$dataFolder/$QCname/models/$model/mse/mse.tar"
+	
 }
 
 unpackCorpusSource() {
@@ -242,6 +243,9 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	ExtrName=$2
 	serachFolder="$dataFolder/$QCname/sources"
 	srcFolders=`find $serachFolder -type d -maxdepth 5 -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
+	mseFolder="$dataFolder/$QCname/models/$ExtrName/mse"
+	mseFiles=`find $mseFolder -name "*.mse"`
+	echo $mseFiles
 	cp "$toolsFolder/image/Moose.image" "$toolsFolder/image/MooseCurrent.image"
 	cp "$toolsFolder/image/Moose.changes" "$toolsFolder/image/MooseCurrent.changes"
 	
@@ -251,25 +255,17 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 	$VM $moose config $PangeaRepo ConfigurationOfPangea --install=development
 	
 	
-	for f in $srcFolders; do
-		
-		sourcePath=$f
-		mseFileName=`echo $sourcePath | awk -F"/" '{print $(NF-1)}' `
-		mseFileWithoutExtension=$mseFileName
+	for sourcePath in $mseFiles; do
+		mseFileWithoutExtension=`basename $sourcePath .mse`
 		mseFileName=$mseFileName".mse"
 		
-		mseFile=`find $dataFolder/$QCname  | grep $mseFileName | grep $ExtrName`
-		imgDest=`echo $mseFile | sed s/MSE.*//`
-		imgDest=${imgDest/$mseFileName/}
-		imgDest=${imgDest/mse\//}
-		imgDest=$imgDest"images/"
+		imgDest="$dataFolder/$QCname/models/$ExtrName/images"
 		
 		absoluteScrFolder=$dataFolder/$QCname/sources/$QCname/Systems
-		$VM $moose PangeaLoadMSE --source=$absoluteScrFolder --mse=$mseFile --name=$mseFileWithoutExtension	
+
+		$VM_UI $moose PangeaLoadMSE --source=$absoluteScrFolder --mse=$sourcePath --name=$mseFileWithoutExtension	
 		mv "$toolsFolder/image/$mseFileWithoutExtension.image" $imgDest
 		mv "$toolsFolder/image/$mseFileWithoutExtension.changes" $imgDest
-		# # mv "$toolsFolder/image/PharoV20.sources" $imgDest
-		# mv "$toolsFolder/image/PharoV10.sources" $imgDest
 		
 	done	
 	
