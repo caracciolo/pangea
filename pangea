@@ -157,6 +157,17 @@ downloadCorpus() {
 	unpackQualitasCorpus $QCname
 }
 
+downloadOnlyMSE() {
+	QCname=$1
+	
+	makeCorpusFolderStructure $QCname
+	# downloadCorpusSources $QCname
+	downloadCorpusModels $QCname
+	# unpackCorpusSource $QCname
+	# unpackQualitasCorpus $QCname
+}
+
+
 downloadAllCorpora(){
 	corporaURI='http://scg.unibe.ch/pangea/'$version'/data/content.txt'
 	curl -o "$dataFolder/content.txt" $corporaURI
@@ -359,7 +370,7 @@ get)
 			if [ "$3" == "-c" ];
 			then
 					makeRootFolderStructure
-					downloadCorpus $4
+					downloadOnlyMSE $4
 					downloadAndUnpackTools
 			else
 				echo "wrong arguments"
