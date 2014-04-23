@@ -418,18 +418,21 @@ make)
 		;;
 		imgs)
 		echo "Start image creation"
-		if [ $# == 4 ]; 
-		then
-			if [ "$3" == "-c" ];
+		if [ "$3" == "-c" ];
+		then	
+			if [ $# == 5 ]; 
 			then
-				makeImages $4 "verveinej11"
+				makeImages $4 $5
 			else
-				echo "wrong arguments"
-				exit;
-            	fi
+				if [ $# == 4 ];
+				then
+					makeImages $4 "verveinej11"
+				fi	
+			fi
 		else
-			echo "a";
-		fi
+			echo "wrong arguments"
+			exit;
+        fi
 		;;
 	esac
 ;;
@@ -438,9 +441,9 @@ clean)
 images)
 	case "$2" in
 		"-c")
-		if [ $# == 3 ];
+		if [ $# == 4 ];
 			then
-			ls $dataFolder/$3/models/verveinej11/images/*.image
+			ls $dataFolder/$3/models/$4/images/*.image
 			echo "Images Folder:"
 			echo "$dataFolder/$3/models/verveinej11/images"
 		else
@@ -451,9 +454,10 @@ images)
 experiment)
 	case "$2" in
 			"-c")
-			if [ $# == 4 ];
+			if [ $# == 5 ];
 				then
-				first=`find $dataFolder/$3/models/verveinej11/images -iname $4*.image | head -1`
+				first=`find $dataFolder/$3/models/$4/images -iname $5*.image | head -1`
+				# echo "find $dataFolder/$3/models/$4/images -iname $5*.image | head -1"
 				$VM_UI $first
 			else
 				echo "expecting corpus name and system name"
