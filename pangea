@@ -462,10 +462,13 @@ images)
 experiment)
 	case "$2" in
 			"-c")
-			if [ $# == 5 ];
+			if [ $# == 4 ];
 				then
-				first=`find $dataFolder/$3/models/$4/images -iname $5*.image | head -1`
-				# echo "find $dataFolder/$3/models/$4/images -iname $5*.image | head -1"
+				extractor=`getDefaultExtractor $3`
+				echo $extractor
+				first=`find $dataFolder/$3/models/$extractor/images -iname $4*.image | head -1`
+				echo "find $dataFolder/$3/models/$extractor/images -iname $4*.image | head -1"
+				
 				$VM_UI $first &
 			else
 				echo "expecting corpus name and system name"
