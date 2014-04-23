@@ -369,8 +369,9 @@ corpora)
 get)
     case "$2" in
     	src)
-		;;
-        
+			makeRootFolderStructure
+			downloadCorpus $4
+		;;        
         mse) 
 		if [ $# == 4 ]; 
 		then
