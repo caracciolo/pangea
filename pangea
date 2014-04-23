@@ -450,11 +450,10 @@ clean)
 images)
 	case "$2" in
 		"-c")
-		if [ $# == 4 ];
+		if [ $# == 3 ];
 			then
-			ls $dataFolder/$3/models/$4/images/*.image
-			echo "Images Folder:"
-			echo "$dataFolder/$3/models/verveinej11/images"
+			extractor=`getDefaultExtractor $4`
+			ls $dataFolder/$3/models/$extractor/images/*.image
 		else
 			echo "expecting corpus name"
 		fi
