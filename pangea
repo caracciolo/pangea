@@ -56,27 +56,25 @@ getDefaultExtractor() {
 #########################
 ## get gata
 makeRootFolderStructure() {
-	#TODO: check if the folders exist before creating them
-	mkdir "$pwd/$version"
-	mkdir "$pwd/$version/examples"
-	mkdir "$pwd/$version/data"
-	mkdir "$pwd/$version/tools"
+	mkdir -p "$pwd/$version"
+	mkdir -p "$pwd/$version/examples"
+	mkdir -p "$pwd/$version/data"
+	mkdir -p "$pwd/$version/tools"
 }
 
 makeCorpusFolderStructure() {
-	#TODO: check if the folders exist before creating them
-	mkdir "$dataFolder/$1"        # create the corpus folder
-	mkdir "$dataFolder/$1/sources"    
-	mkdir "$dataFolder/$1/models"	
+	mkdir -p "$dataFolder/$1"       
+	mkdir -p "$dataFolder/$1/sources"    
+	mkdir -p "$dataFolder/$1/models"	
 }
 
 #$1 corpus name
-#$1 extractor name
+#$2 extractor name
 makeModelFolderStructure() {
-	mkdir "$dataFolder/$1/models/$2"
-	mkdir "$dataFolder/$1/models/$2/extractor"
-	mkdir "$dataFolder/$1/models/$2/mse"
-	mkdir "$dataFolder/$1/models/$2/images"
+	mkdir -p "$dataFolder/$1/models/$2"
+	mkdir -p "$dataFolder/$1/models/$2/extractor"
+	mkdir -p "$dataFolder/$1/models/$2/mse"
+	mkdir -p "$dataFolder/$1/models/$2/images"
 }
 
 downloadCorpusSources(){
@@ -172,10 +170,7 @@ downloadOnlyMSE() {
 	QCname=$1
 	
 	makeCorpusFolderStructure $QCname
-	# downloadCorpusSources $QCname
 	downloadCorpusModels $QCname
-	# unpackCorpusSource $QCname
-	# unpackQualitasCorpus $QCname
 }
 
 
@@ -232,11 +227,9 @@ downloadAndUnpackImagesForCorpus() {
 
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
 	imagesURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/$ExtrName/images/images.tar"
-	# echo $imagesURI
-	# echo $imagesFolder/images.tar
+
 	curl -o "$imagesFolder/images.tar" "$imagesURI"
 	tar xvf "$imagesFolder/images.tar" -C "$imagesFolder"
-
 
 	# rm "$toolsFolder/image.tar"
 	# rm "$toolsFolder/vm.tar"
@@ -259,15 +252,12 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 
 	QCname=$1
 	ExtrName=$2
-	serachFolder="$dataFolder/$QCname/sources"
-	srcFolders=`find $serachFolder -type d -maxdepth 5 -path "*/src" | grep -v /src/ | grep -v $QCname/docs/`
 	mseFolder="$dataFolder/$QCname/models/$ExtrName/mse"
 	mseFiles=`find $mseFolder -name "*.mse"`
-	echo $mseFiles
+
 	cp "$toolsFolder/image/Moose.image" "$toolsFolder/image/MooseCurrent.image"
 	cp "$toolsFolder/image/Moose.changes" "$toolsFolder/image/MooseCurrent.changes"
 	
-
 	moose="$toolsFolder/image/MooseCurrent.image"
 	
 	$VM $moose config $PangeaRepo ConfigurationOfPangea --install=development
@@ -287,7 +277,6 @@ makeImages(){  ## makeImages "QC-20120401r" "verveinej11"
 		
 	done	
 	
-	#rm "$toolsFolder/image/mooseCurrent.image" "$toolsFolder/image/mooseCurrent.changes"
 }
 
 #####################################################################################################################
@@ -506,10 +495,3 @@ run)
 ;;
 esac
 
-# -------- download
-
-#for x in $corpora
-#do
-#	downloadCorpus $x
-#	unpackCorpus $x
-#done
