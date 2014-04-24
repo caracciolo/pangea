@@ -243,6 +243,14 @@ downloadAndUnpackImagesForCorpus() {
 
 }
 
+downloadAndUnpackImagesForAllCorpora(){
+	while read corpus; do
+  		echo "== download images for $corpus"
+		downloadAndUnpackImagesForCorpus $corpus
+
+	done < "$dataFolder/content.txt"
+}
+
 
 #####################################################################################################################
 ## pangea make image #######################################################################################################
@@ -367,28 +375,26 @@ corpora)
 	listCorpora
 	;;
 get)
+	makeRootFolderStructure
+	downloadAndUnpackTools
+
     case "$2" in
     	src)
-			makeRootFolderStructure
-			downloadCorpus $4
+			downloadCorpus $4			
 		;;        
         mse) 
 		if [ $# == 4 ]; 
 		then
 			if [ "$3" == "-c" ];
 			then
-					echo "==getting the mse files for $4"
-					makeRootFolderStructure
-					downloadOnlyMSE $4
-					downloadAndUnpackTools
+				echo "==getting the mse files for $4"					
+				downloadOnlyMSE $4					
 			else
 				echo "wrong arguments"
 				exit;
             	fi
-		else
-			makeRootFolderStructure
-			downloadAllCorpora
-			downloadAndUnpackTools
+		else			
+			downloadAllCorpora			
 		fi
     	;;    	
     	imgs)
@@ -396,16 +402,13 @@ get)
 		then
 			if [ "$3" == "-c" ];
 			then
-					# makeRootFolderStructure
-					# downloadCorpus $4
-					downloadAndUnpackImagesForCorpus $4 $defaultExtractor
+				extractor=`getDefaultExtractor $4`			
+				downloadAndUnpackImagesForCorpus $4 $extractor
 			else
 				echo "wrong arguments"
 				exit;
             	fi
 		else
-			# makeRootFolderStructure
-			# downloadAllCorpora
 			downloadAndUnpackImagesForAllCorpora
 		fi
 
@@ -466,14 +469,13 @@ experiment)
 			if [ $# == 4 ];
 				then
 				extractor=`getDefaultExtractor $3`
-				echo $extractor
-				first=`find $dataFolder/$3/models/$extractor/images -iname $4*.image | head -1`
-				echo "find $dataFolder/$3/models/$extractor/images -iname $4*.image | head -1"
-				
-				$VM_UI $first &
+				first=`find $dataFolder/$3/models/$extractor/images -iname $4*.image | head -1`	
+				$VM_UI $first &			
 			else
-				echo "expecting corpus name and system name"
-			fi
+				extractor=`getDefaultExtractor $3`
+				first=`find $dataFolder/$3/models/$extractor/images -iname *.image | head -1`
+				$VM_UI $first &
+			fi			
 		esac
 ;;
 
