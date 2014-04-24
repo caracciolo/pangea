@@ -1,10 +1,9 @@
-Pangea 
-	loadHubPackage: 'PolyExp' from: 'PolyExperiment'.
+Pangea loadHubPackage: 'PolyExp' from: 'PolyExperiment'.
 
 Script is: [ 
-		| a |
-	
-		a := PolymorphismAnalyzer forModel: Pangea model.
+		| a analyzer |
+		analyzer := (Smalltalk at: #PolymorphismAnalyzer). 
+		a := analyzer forModel: Pangea model.
 		CommaSeparated values
 			* Pangea model name;
 			* Pangea model allModelClasses size printString;
