@@ -341,7 +341,7 @@ runParallelScript() {
 			# echoerr "--" $systemName
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output 2>/dev/null && echo "Done" $systemName &
-			sleep 0.5
+			while [ $(jobs | wc -l) -ge 8 ] ; do sleep 0.05 ; done
 	done
 	echoerr `date`
 }
