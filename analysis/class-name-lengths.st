@@ -18,9 +18,9 @@ Script is: [
 	interestingClasses do: [ :cl|
 		sizes add: (wordCount value: cl name).
 	].
-
+	
 	1 to: 30 do: [ :i| 
-			Output print: ((sizes sortedCounts at: i ifAbsent: 0->0) value printString).
+			Output print: ((sizes occurrencesOf: i) printString).
 			Output print: ','.
 		].
 	Output cr.
