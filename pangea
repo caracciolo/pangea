@@ -310,15 +310,19 @@ runScript() {
 	QCname=$1 
 	ExtrName=$2
 	Script=$3
+	ScriptName=`(basename "$Script")`
+	mkdir results/$ScriptName
+	
 
 	#echo $VM
 	echoerr `date`
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
-			echoerr "--" `(basename "$imageFile")`
+			systemName=`(basename "$imageFile")`
+			echoerr "--" $systemName
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
-			$VM $imageFile st $pwd/$Script 2>/dev/null
+			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output 2>/dev/null &
 	done
 	echoerr `date`
 }
