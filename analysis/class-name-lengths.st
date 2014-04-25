@@ -20,7 +20,7 @@ Script is: [
 	].
 
 	1 to: 30 do: [ :i| 
-			Output print: ((sizes sortedCounts at: i ifAbsent: 0->0) value).
+			Output print: ((sizes sortedCounts at: i ifAbsent: 0->0) value printString).
 			Output print: ' '.
 		].
 	Output cr.
