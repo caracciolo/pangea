@@ -310,6 +310,24 @@ runScript() {
 	QCname=$1 
 	ExtrName=$2
 	Script=$3
+
+	#echo $VM
+	echoerr `date`
+	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
+
+	for imageFile in `find $imagesFolder |  grep "image$" `; do
+			echoerr "--" `(basename "$imageFile")`
+			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
+			$VM $imageFile st $pwd/$Script 2>/dev/null
+	done
+	echoerr `date`
+}
+
+
+runParallelScript() {
+	QCname=$1 
+	ExtrName=$2
+	Script=$3
 	ScriptName=`(basename "$Script")`
 	mkdir results/$ScriptName
 	
@@ -320,9 +338,10 @@ runScript() {
 	
 	for imageFile in `find $imagesFolder |  grep "image$" `; do
 			systemName=`(basename "$imageFile")`
-			echoerr "--" $systemName
+			# echoerr "--" $systemName
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
-			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output 2>/dev/null
+			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output 2>/dev/null && echo "Done" $systemName &
+			sleep 0.5
 	done
 	echoerr `date`
 }
@@ -350,7 +369,7 @@ if [ $# -eq 0 ]
     echo "       pangea get <src|mse|imgs> [-c QCr] "
     echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
     echo "       pangea clean <all|mse|imgs> [-c QCr]"
-    echo "       pangea run script [-c QCr] <script-name.st>"
+    echo "       pangea [run|parallel] script [-c QCr] <script-name.st>"
     echo "       pangea corpora"
     echo "       pangea images [-c QCr]"
     echo "       pangea experiment [-c QCr] [system name]"
@@ -502,6 +521,24 @@ run)
 			echo "a";
 		fi
 		;;
+
+		parallel)
+		echo "Running the script with MASSIVE parallelization..."
+		if [ $# == 5 ]; 
+		then
+			if [ "$3" == "-c" ];
+			then
+				# echo "running script..."
+				extractor=`getDefaultExtractor $4`
+				runParallelScript $4 $extractor $5
+			else
+				echo "wrong arguments"
+				exit;
+            	fi
+		else
+			echo "a";
+		fi
+		;;		
 	esac
 ;;
 *) echo "Signal number $1 is not processed"
