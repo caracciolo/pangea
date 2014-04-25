@@ -469,6 +469,15 @@ experiment)
 ;;
 
 edit)
+	case "$2" in
+		"-c")
+		if [ $# == 4 ];
+			then
+			$EDITOR $dataFolder/$3/sources $4
+		else
+			echo "error"
+		fi	
+	esac
 ;;
 run)
 	case "$2" in
