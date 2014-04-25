@@ -18,7 +18,7 @@ Script is: [
 	interestingClasses do: [ :cl|
 		sizes add: (wordCount value: cl name).
 	].
-	
+	Output print: Pangea model name, ','.
 	1 to: 30 do: [ :i| 
 			Output print: ((sizes occurrencesOf: i) printString).
 			Output print: ','.
