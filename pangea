@@ -329,11 +329,24 @@ listCorpora() {
 	echo " " `curl -s $corporaURI`
 
 	echo "Installed: "
+	listInstalledCorpora
+}
+
+listInstalledCorpora(){
 	if ! [ -d 2.0 ]
 	then
 		echo " none"
 	else
 		echo " " `(cd 2.0/data/ && ls -d */ | sed s/\\\///g)`
+	fi
+}
+
+helpSpecifyCorpus(){
+	if ! [ -d 2.0 ]
+	then
+		echo " error"
+	else
+		echo " please choose a corpus: " `(cd 2.0/data/ && ls -d */ | sed s/\\\///g)`
 	fi
 }
 
@@ -379,7 +392,7 @@ get)
 				echo "==getting the mse files for $4"					
 				downloadOnlyMSE $4					
 			else
-				echo "wrong arguments"
+				helpSpecifyCorpus
 				exit;
             	fi
 		else			
@@ -394,7 +407,7 @@ get)
 				extractor=`getDefaultExtractor $4`			
 				downloadAndUnpackImagesForCorpus $4 $extractor
 			else
-				echo "wrong arguments"
+				helpSpecifyCorpus
 				exit;
             	fi
 		else
@@ -414,7 +427,7 @@ make)
 			then
 				makeMSE $4 "verveinej11"
 			else
-				echo "wrong arguments"
+				helpSpecifyCorpus
 				exit;
             	fi
 		else
@@ -432,7 +445,7 @@ make)
 				makeImages $4 $extractor
 			fi
 		else
-			echo "wrong arguments"
+			helpSpecifyCorpus
 			exit;
         fi
 		;;
@@ -450,6 +463,9 @@ images)
 		else
 			echo "expecting corpus name"
 		fi
+		;;		
+	*) 
+		helpSpecifyCorpus	
 	esac
 ;;
 experiment)
@@ -464,8 +480,11 @@ experiment)
 				extractor=`getDefaultExtractor $3`
 				first=`find $dataFolder/$3/models/$extractor/images -iname *.image | head -1`
 				$VM_UI $first &
-			fi			
-		esac
+			fi	
+			;;		
+		*) 
+			helpSpecifyCorpus
+	esac
 ;;
 
 edit)
