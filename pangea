@@ -7,6 +7,7 @@ dataFolder="$pwd/$version/data"
 toolsFolder="$pwd/$version/tools"
 PangeaRepo="http://www.smalltalkhub.com/mc/SCG/Pangea/main"
 defaultExtractor="verveinej11"
+CORES=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
 
 # useful function
 echoerr() { echo "$@" 1>&2; }
@@ -341,7 +342,7 @@ runParallelScript() {
 			# echoerr "--" $systemName
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
 			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output 2>/dev/null && echo "Done" $systemName &
-			while [ $(jobs | wc -l) -ge 4 ] ; do sleep 0.01 ; done
+			while [ $(jobs | wc -l) -ge $CORES ] ; do sleep 0.01 ; done
 	done
 	wait
 	echoerr `date`

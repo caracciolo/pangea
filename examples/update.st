@@ -4,4 +4,8 @@
    update.
 
 ConfigurationOfPangea loadDefault.
+
+Pangea 
+	loadHubPackage: 'Famix-Core' from: 'Moose/Moose'.
+
 Smalltalk snapshot: true andQuit: true.
