@@ -1,4 +1,4 @@
-Pangea loadHubPackage: 'PolyExp' from: 'PolyExperiment'.
+Pangea loadHubPackage: 'PolyExp' from: 'caracciolo/PolyExperiment'.
 
 Script is: [ 
 		| a analyzer |
