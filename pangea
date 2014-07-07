@@ -330,7 +330,10 @@ runParallelScript() {
 	ExtrName=$2
 	Script=$3
 	ScriptName=`(basename "$Script")`
-	mkdir results/$ScriptName
+	FolderName=$ScriptName-$QCname
+	
+	rm -rf results/$FolderName
+	mkdir results/$FolderName
 	
 
 	#echo $VM
@@ -341,7 +344,7 @@ runParallelScript() {
 			systemName=`(basename "$imageFile")`
 			# echoerr "--" $systemName
 			# echo $VM $imageFile st $pwd/$Script 2>/dev/null
-			$VM $imageFile st $pwd/$Script > results/$ScriptName/$systemName.output && echo "Done" $systemName &
+			$VM $imageFile st $pwd/$Script > results/$FolderName/$systemName.output && echo "Done" $systemName &
 			while [ $(jobs | wc -l) -ge $CORES ] ; do sleep 0.01 ; done
 	done
 	wait
