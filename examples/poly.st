@@ -7,9 +7,9 @@ Script is: [
 		a := analyzer forModel: Pangea model.
 		CommaSeparated values
 			* Pangea model name;
-			* Pangea model allModelClasses size printString;
-			* a allPolyClasses size printString;
-			* Pangea model allModelMethods size printString;
-			* a allPolyMethods size printString;
+			* Pangea model allModelClasses size;
+			* a allPolyClasses size;
+			* Pangea model allModelMethods size;
+			* a allPolyMethods size;
 			print.		
 	 ].
