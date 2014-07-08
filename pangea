@@ -227,10 +227,15 @@ downloadAndUnpackImagesForCorpus() {
 	ExtrName=$2
 
 	imagesFolder="$dataFolder/$QCname/models/$ExtrName/images"
+	imagesCompressedArchive="$imagesFolder/images.tar"
 	imagesURI="http://scg.unibe.ch/pangea/$version/data/$QCname/models/$ExtrName/images/images.tar"
 
-	curl -o "$imagesFolder/images.tar" "$imagesURI"
-	tar xvf "$imagesFolder/images.tar" -C "$imagesFolder"
+	mkdir -p $imagesFolder
+	
+	echo "download: $imagesURI"
+
+	curl -o "$imagesCompressedArchive" "$imagesURI"
+	tar xvf "$imagesCompressedArchive" -C "$imagesFolder"
 
 	# rm "$toolsFolder/image.tar"
 	# rm "$toolsFolder/vm.tar"
