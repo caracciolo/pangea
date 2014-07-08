@@ -384,13 +384,13 @@ helpSpecifyCorpus(){
 if [ $# -eq 0 ]
   then
    	echo "---=== Usage ===---"
-    echo "       pangea get <src|mse|imgs> [-c QCr] "
-    echo "       pangea make <all|mse|imgs> [-c QCr] [-e /path/to/extractor | name] [-m /path/to/mooseImage] "
-    echo "       pangea clean <all|mse|imgs> [-c QCr]"
-    echo "       pangea run [script|parallel] [-c QCr] <script-name.st>"
+    echo "       pangea get <src|mse|models> [-c CorpusName] "
+    echo "       pangea make <all|mse|models> [-c CorpusName] [-e /path/to/extractor] [-m /path/to/mooseImage] "
+    #NOT implemented yet ::  echo "       pangea clean <all|mse|models> [-c QCr]"
+    echo "       pangea run [script|parallel] [-c CorpusName] <script-name.st>"
     echo "       pangea corpora"
-    echo "       pangea images [-c QCr]"
-    echo "       pangea experiment [-c QCr] [system name]"
+    echo "       pangea images [-c CorpusName]"
+    echo "       pangea experiment [-c CorpusName] [SystemName]"
     echo ""
     echo "---=== Corpora ===---"
     listCorpora
@@ -416,8 +416,7 @@ get)
 		if [ $# == 4 ]; 
 		then
 			if [ "$3" == "-c" ];
-			then
-				echo "==getting the mse files for $4"					
+			then					
 				downloadOnlyMSE $4					
 			else
 				helpSpecifyCorpus
@@ -428,6 +427,9 @@ get)
 		fi
     	;;    	
     	imgs)
+			echo "deprecated command! please use: pangea get models"	
+    	;;
+    	models)
 		if [ $# == 4 ]; 
 		then
 			if [ "$3" == "-c" ];
@@ -441,7 +443,6 @@ get)
 		else
 			downloadAndUnpackImagesForAllCorpora
 		fi
-
     	;;
     esac
 ;;
@@ -463,7 +464,11 @@ make)
 		fi
 		;;
 
-		imgs)
+		imgs)		
+			echo "deprecated command! please use: pangea make models"	
+		;;
+
+    	models)
 		echo "Start image creation"
 		if [ "$3" == "-c" ];
 		then	
@@ -547,12 +552,11 @@ run)
 		;;
 
 		parallel)
-		echo "Running the script with MASSIVE parallelization..."
+		## echo "Running the script with MASSIVE parallelization..."
 		if [ $# == 5 ]; 
 		then
 			if [ "$3" == "-c" ];
 			then
-				# echo "running script..."
 				extractor=`getDefaultExtractor $4`
 				runParallelScript $4 $extractor $5
 			else
