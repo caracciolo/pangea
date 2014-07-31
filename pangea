@@ -236,7 +236,7 @@ downloadAndUnpackImagesForCorpus() {
 
 	curl -o "$imagesCompressedArchive" "$imagesURI"
 	tar xvf "$imagesCompressedArchive" -C "$imagesFolder"
-
+	./pangea run script -c $QCname utils/update.st > /dev/null
 	# rm "$toolsFolder/image.tar"
 	# rm "$toolsFolder/vm.tar"
 
