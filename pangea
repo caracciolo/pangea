@@ -42,7 +42,7 @@ fi
 
 getDefaultExtractor() {
 	corpus=$1
-	if [[ "$corpus" == 'Squeaksource-100' ]];
+	if [[ "$corpus" == 'ss' || "$corpus" == 'Squeaksource-100' ]];
 	then
 		echo "moose"
 	else
@@ -496,7 +496,7 @@ images)
 		"-c")
 		if [ $# == 3 ];
 			then
-			extractor=`getDefaultExtractor $4`
+			extractor=`getDefaultExtractor $3`
 			ls $dataFolder/$3/models/$extractor/images/*.image
 		else
 			echo "expecting corpus name"
