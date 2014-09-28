@@ -5,10 +5,10 @@ Script is: [
       e candidates].
 
    threadMethods := methods select: [ :e |
-   		e belongsTo name = #Thread
+      e belongsTo name = #Thread
    ].
 
-	threadMethods do: [ :met|
-		Output print: met signature; cr.
-		 ]
+   threadMethods do: [ :met|
+      Output print: met signature; cr.
+   ]
 ]
