@@ -198,6 +198,13 @@ downloadAndUnpackTools() {
 	rm "$toolsFolder/vm.tar"
 }
 
+downloadAndUnpackToolsIfNeeded() {
+	if ! [ -d $toolsFolder ];
+	then
+		downloadAndUnpackTools
+	fi
+}
+
 
 unpackCorpus(){
 	
@@ -411,11 +418,11 @@ corpora)
 	;;
 get)
 	makeRootFolderStructure
-	downloadAndUnpackTools
+	downloadAndUnpackToolsIfNeeded
 
     case "$2" in
     	src)
-			downloadCorpus $4			
+			downloadCorpusSources $4			
 		;;        
         mse) 
 		if [ $# == 4 ]; 
