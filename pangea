@@ -422,8 +422,9 @@ get)
 
     case "$2" in
     	src)
+			makeCorpusFolderStructure $4
 			downloadCorpusSources $4			
-		;;        
+		;;
         mse) 
 		if [ $# == 4 ]; 
 		then
