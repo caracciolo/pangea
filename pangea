@@ -122,8 +122,8 @@ downloadCorpusModels() { ## downloadCorpusModels "QC-20120401r"
 		
 		makeModelFolderStructure $QCname $model
 		downloadExtractor $QCname $model
-		curl -o $localTar $remoteTar
-		tar xvf $localTar -C $localMSEFolder
+		curl "$remoteTar" -o "$localTar"
+		tar xvf "$localTar" -C "$localMSEFolder"
 		
 		echo "removing the mse.tar..."
 		rm "$dataFolder/$QCname/models/$model/mse/mse.tar"
@@ -199,7 +199,7 @@ downloadAndUnpackTools() {
 }
 
 downloadAndUnpackToolsIfNeeded() {
-	if ! [ -d $toolsFolder ];
+	if ! [ -d "$toolsFolder" ];
 	then
 		downloadAndUnpackTools
 	fi
